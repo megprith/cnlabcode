@@ -1,0 +1,50 @@
+#include <bits/stdc++.h>
+#include <ctime>
+
+#define ll long long int
+using namespace std;
+
+void transmission(ll &i, ll &N, ll &tf, ll &tt) {
+    vector<bool> ack(tf + 1, false); // Acknowledgment array
+    while (i <= tf) {
+        int sentFrames = 0;
+        // Send frames within the window
+        for (int k = i; k < i + N && k <= tf; k++) {
+            if (!ack[k]) { // Only send frames that are not yet acknowledged
+                cout << "Sending Frame " << k << "..." << endl;
+                sentFrames++;
+                tt++;
+            }
+        }
+        // Receive acknowledgments
+        for (int k = i; k < i + N && k <= tf; k++) {
+            if (!ack[k]) { // Only expect acknowledgments for sent frames
+                int f = rand() % 2;
+                if (f == 0) {
+                    cout << "Acknowledgment for Frame " << k << "..." << endl;
+                    ack[k] = true;
+                } else {
+                    cout << "Timeout!! Frame Number : " << k << " Not Received" << endl;
+                }
+            }
+        }
+        // Slide the window
+        while (i <= tf && ack[i]) {
+            i++;
+        }
+        cout << "\n";
+    }
+}
+
+int main() {
+    ll tf, N, tt = 0;
+    srand(time(NULL));
+    cout << "Enter the Total number of frames: ";
+    cin >> tf;
+    cout << "Enter the Window Size: ";
+    cin >> N;
+    ll i = 1;
+    transmission(i, N, tf, tt);
+    cout << "Total number of frames which were sent and resent are: " << tt << endl;
+    return 0;
+}
